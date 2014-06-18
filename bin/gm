@@ -8,7 +8,7 @@ var cp = require('child_process'),
 process.bin = process.title = 'gm';
 
 //get passed in arguments
-var args = Array.prototype.splice.call(process.argv);
+var args = Array.prototype.slice.call(process.argv);
 args.splice(0,2);
 
 var gm = cp.spawn(binPath, args, { stdio: 'inherit' });
