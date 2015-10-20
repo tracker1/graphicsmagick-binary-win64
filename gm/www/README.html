@@ -72,7 +72,7 @@ is available via the Mercurial distributed source control management
 tool (<a class="reference external" href="http://mercurial.selenic.com/">http://mercurial.selenic.com/</a>). GraphicsMagick may be retrieved
 via the following command:</p>
 <blockquote>
-hg clone <a class="reference external" href="http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/">http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/</a> GM</blockquote>
+hg clone <a class="reference external" href="http://hg.code.sf.net/p/graphicsmagick/code/">http://hg.code.sf.net/p/graphicsmagick/code/</a> GM</blockquote>
 <p>Mercurial provides a complete stand-alone repository which contains
 the full history of the GraphicsMagick project.  You may use the
 cloned repository for your own purposes related to GraphicsMagick
@@ -94,11 +94,11 @@ modern Unix system (including Linux and MacOS X) and Microsoft Windows.
 Installation instructions may be found in the following files (or their
 HTML equivalents):</p>
 <ul>
-<li><p class="first">Unix / MacOS-X / Cygwin / MinGW:</p>
-<p><a class="reference external" href="INSTALL-unix.html">INSTALL-unix.txt</a></p>
+<li><p class="first">Unix / Linux / *BSD / MacOS-X / Cygwin / MinGW:</p>
+<p><a class="reference external" href="INSTALL-unix.html">Installation on Unix-like systems</a></p>
 </li>
 <li><p class="first">Microsoft Windows (Via &quot;setup&quot; style installer or from source code):</p>
-<p><a class="reference external" href="INSTALL-windows.html">INSTALL-windows.txt</a></p>
+<p><a class="reference external" href="INSTALL-windows.html">Installation on Microsoft Windows</a></p>
 </li>
 </ul>
 </blockquote>
@@ -194,8 +194,8 @@ JPEG library (and lose compatibility with some Postscript files).</p>
 format. HP printers usually accept PCL format rather than HPGL
 format.  Ghostscript (see above) is also required.</p>
 </li>
-<li><p class="first">GraphicsMagick requires the lcms library (1.11 or later, including
-2.X) available from</p>
+<li><p class="first">GraphicsMagick requires the lcms library (2.0 or later) available
+from</p>
 <blockquote>
 <p><a class="reference external" href="http://www.littlecms.com/">http://www.littlecms.com/</a></p>
 </blockquote>
@@ -228,7 +228,8 @@ HTTP from</p>
 </blockquote>
 <p>to read and write the JBIG image format.</p>
 </li>
-<li><p class="first">GraphicsMagick requires the WebP library available via HTTPS from</p>
+<li><p class="first">GraphicsMagick requires the WebP library version 0.1.99 (or later)
+available via HTTPS from</p>
 <blockquote>
 <p><a class="reference external" href="https://developers.google.com/speed/webp/">https://developers.google.com/speed/webp/</a></p>
 </blockquote>
@@ -335,7 +336,7 @@ programs and provides access to debugging features that detect memory
 leaks, buffer overruns, multiple frees, use of uninitialized data, use
 of freed data, and many other common programming errors.</p>
 </li>
-<li><p class="first">GraphicsMagick requires libwmf 0.2.5 (or later) from</p>
+<li><p class="first">GraphicsMagick requires libwmflite from libwmf 0.2.5 (or later) from</p>
 <blockquote>
 <p><a class="reference external" href="http://sourceforge.net/projects/wvware/">http://sourceforge.net/projects/wvware/</a></p>
 </blockquote>
@@ -350,7 +351,9 @@ libwmf package as a whole depends on FreeType 2 and either the
 xmlsoft libxml, or expat libraries. Since GraphicsMagick already uses
 libxml (for reading SVG and to retrieve files via HTTP or FTP), it is
 recommended that the options '--without-expat --with-xml' be supplied
-to libwmf's configure script.</p>
+to libwmf's configure script.  If the other features of libwmf are
+not needed, then the '--disable-heavy' option may be used to only
+build libwmflite.</p>
 <p>GraphicsMagick's WMF renderer provides some of the finest WMF
 rendering available due its use of antialiased drawing algorithms.
 You may select a background color or texture image to render on. For
@@ -403,7 +406,7 @@ distributed with &quot;.xz&quot; or &quot;.lzma&quot; extensions.</p>
 </li>
 </ul>
 <hr class="docutils" />
-<p>Copyright © GraphicsMagick Group 2002 - 2013</p>
+<p>Copyright © GraphicsMagick Group 2002 - 2015</p>
 </div>
 </div>
 </body>
