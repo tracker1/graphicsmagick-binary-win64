@@ -38,7 +38,7 @@ is available via the Mercurial distributed source control management
 tool (http://mercurial.selenic.com/). GraphicsMagick may be retrieved
 via the following command:
 
-  hg clone http://graphicsmagick.hg.sourceforge.net/hgweb/graphicsmagick/graphicsmagick/ GM
+  hg clone http://hg.code.sf.net/p/graphicsmagick/code/ GM
 
 Mercurial provides a complete stand-alone repository which contains
 the full history of the GraphicsMagick project.  You may use the
@@ -61,13 +61,13 @@ Installation
   Installation instructions may be found in the following files (or their
   HTML equivalents):
 
-  * Unix / MacOS-X / Cygwin / MinGW:
+  * Unix / Linux / \*BSD / MacOS-X / Cygwin / MinGW:
 
-    `INSTALL-unix.txt <INSTALL-unix.html>`_
+    `Installation on Unix-like systems <INSTALL-unix.html>`_
 
   * Microsoft Windows (Via "setup" style installer or from source code):
 
-    `INSTALL-windows.txt <INSTALL-windows.html>`_
+    `Installation on Microsoft Windows <INSTALL-windows.html>`_
 
 Add-On Libraries & Programs
 ---------------------------
@@ -164,8 +164,8 @@ building under Microsoft Windows:
   format. HP printers usually accept PCL format rather than HPGL
   format.  Ghostscript (see above) is also required.
 
-* GraphicsMagick requires the lcms library (1.11 or later, including
-  2.X) available from
+* GraphicsMagick requires the lcms library (2.0 or later) available
+  from
 
      http://www.littlecms.com/
 
@@ -198,7 +198,8 @@ building under Microsoft Windows:
 
   to read and write the JBIG image format.
 
-* GraphicsMagick requires the WebP library available via HTTPS from
+* GraphicsMagick requires the WebP library version 0.1.99 (or later)
+  available via HTTPS from
 
      https://developers.google.com/speed/webp/
 
@@ -305,7 +306,7 @@ building under Microsoft Windows:
   leaks, buffer overruns, multiple frees, use of uninitialized data, use
   of freed data, and many other common programming errors.
 
-* GraphicsMagick requires libwmf 0.2.5 (or later) from
+* GraphicsMagick requires libwmflite from libwmf 0.2.5 (or later) from
 
      http://sourceforge.net/projects/wvware/
 
@@ -321,7 +322,9 @@ building under Microsoft Windows:
   xmlsoft libxml, or expat libraries. Since GraphicsMagick already uses
   libxml (for reading SVG and to retrieve files via HTTP or FTP), it is
   recommended that the options '--without-expat --with-xml' be supplied
-  to libwmf's configure script.
+  to libwmf's configure script.  If the other features of libwmf are
+  not needed, then the '--disable-heavy' option may be used to only
+  build libwmflite.
 
   GraphicsMagick's WMF renderer provides some of the finest WMF
   rendering available due its use of antialiased drawing algorithms.
@@ -377,4 +380,4 @@ building under Microsoft Windows:
 
 .. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
-Copyright |copy| GraphicsMagick Group 2002 - 2013
+Copyright |copy| GraphicsMagick Group 2002 - 2015

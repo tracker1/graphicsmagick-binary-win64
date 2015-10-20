@@ -180,7 +180,6 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="images/ball.png" ALT="*">APP1JPEG </td><td>rw-</td><td>Raw JPEG binary data</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">ART      </td><td>r--</td><td>PF1: 1st Publisher</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">ARW      </td><td>r--</td><td>Sony Alpha DSLR RAW</td></tr>
-<tr><td><dd><img SRC="images/ball.png" ALT="*">AVI      </td><td>r--</td><td>Audio/Visual Interleaved</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">AVS      </td><td>rw+</td><td>AVS X image</td></tr>
 <tr><td><dd><img SRC="images/ball.png" ALT="*">BIE      </td><td>rw-</td><td>Joint Bi-level Image experts Group</td></tr>
 <tr><td>          </td><td>   </td><td>interchange format</td></tr>
@@ -1518,9 +1517,15 @@ are not.
 <dd>If the pcl:fit-to-page flag is defined, then the printer is
 requested to scale the image to fit the page size (width and/or
 height).</dd>
-<dt>pdf:use-cropbox</dt>
-<dd>If the pdf:use-cropbox flag is defined, then Ghostscript is
-requested to apply the PDF crop box.
+<dt>pdf:use-cropbox={true|false}</dt>
+<dd>If the pdf:use-cropbox flag is set to <strong>true</strong>, then
+Ghostscript is requested to apply the PDF crop box.
+</dd>
+<dt>pdf:stop-on-error={true|false}</dt>
+<dd>If the pdf:stop-on-error flag is set to <strong>true</strong>, then
+Ghostscript is requested to stop processing the PDF when the first
+error is encountered.  Otherwise it will attempt to process all
+requested pages.
 </dd>
 <dt>ps:imagemask</dt>
 <dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
@@ -1530,7 +1535,7 @@ imagemask operator instead of the image operator.
 <dt>tiff:alpha={unspecified|associated|unassociated}</dt>
 <dd>Specify the TIFF alpha channel type when reading or writing TIFF files,
 overriding the normal value. The default alpha channel type for new files
-is associated alpha. Existing alpha settings are preserved when
+is unspecified alpha. Existing alpha settings are preserved when
 converting from one TIFF file to another. When a TIFF file uses
 associated alpha, the image pixels are pre-multiplied (i.e. altered) with
 the alpha channel. Files with "associated" alpha appear as if they were
@@ -1556,6 +1561,23 @@ therefore RFC 2301 recommends using reverse order.
 will use it to set the group3 options tag when writing
 group3-compressed TIFF.  Please see the TIFF specification for the
 usage of this tag.  The default value is 4.
+</dd>
+<dt>tiff:ignore-tags=&lt;tags&gt;</dt>
+<dd>If the tiff:ignore-tags key is defined, then it is used as a list
+of comma-delimited integer TIFF tag values to ignore while reading the
+TIFF file.  This is useful in order to be able to read files which
+which otherwise fail to read due to problems with TIFF tags.  Note
+that some TIFF tags are required in order to be able to read the image
+data at all.
+</dd>
+<dt>tiff:report-warnings={false|true}</dt>
+<dd>If the tiff:report-warnings key is defined and set to <strong>true</strong>,
+then TIFF warnings are reported as a warning exception rather than as
+a coder log message.  Such warnings are reported after the image has
+been read or written.  Most TIFF warnings are benign but sometimes
+they may help deduce problems with the TIFF file, or help detect that
+the TIFF file requires a special application to read successfully due
+to the use of proprietary or specialized extensions.
 </dd>
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
 <dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
@@ -1634,6 +1656,81 @@ Enables tiled TIFF if it has not already been enabled.
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
+</dd>
+<dt>webp:lossless={true|false}</dt>
+<dd>Enable lossless encoding.
+</dd>
+<dt>webp:method={0-6}</dt>
+<dd>Quality/speed trade-off.
+</dd>
+<dt>webp:image-hint={default,graph,photo,picture}</dt>
+<dd>Hint for image type.
+</dd>
+<dt>webp:target-size=&lt;integer&gt;</dt>
+<dd>Target size in bytes.
+</dd>
+<dt>webp:target-psnr=&lt;float&gt;</dt>
+<dd>Minimal distortion to try to achieve.
+</dd>
+<dt>webp:segments={1-4}</dt>
+<dd>Maximum number of segments to use.
+</dd>
+<dt>webp:sns-strength={0-100}</dt>
+<dd>Spatial Noise Shaping.
+</dd>
+<dt>webp:filter-strength={0-100}</dt>
+<dd>Filter strength.
+</dd>
+<dt>webp:filter-sharpness={0-7}</dt>
+<dd>Filter sharpness.
+</dd>
+<dt>webp:filter-type={0,1}</dt>
+<dd>Filtering type. 0 = simple, 1 = strong (only used if
+filter-strength &gt; 0 or autofilter is enabled).
+</dd>
+<dt>webp:auto-filter={true|false}</dt>
+<dd>Auto adjust filter's strength.
+</dd>
+<dt>webp:alpha-compression=&lt;integer&gt;</dt>
+<dd>Algorithm for encoding the alpha plane (0 = none, 1 = compressed
+with WebP lossless). Default is 1.
+</dd>
+<dt>webp:alpha-filtering=&lt;integer&gt;</dt>
+<dd>Predictive filtering method for alpha plane. 0: none, 1: fast, 2:
+best. Default is 1.
+</dd>
+<dt>webp:alpha-quality={0-100}</dt>
+<dd>Between 0 (smallest size) and 100 (lossless). Default is 100.
+</dd>
+<dt>webp:pass=[1..10]</dt>
+<dd>Number of entropy-analysis passes.
+</dd>
+<dt>webp:show-compressed={true|false}</dt>
+<dd>Export the compressed picture back.  In-loop filtering is not
+applied.
+</dd>
+<dt>webp:preprocessing=[0,1,2]</dt>
+<dd>0=none, 1=segment-smooth, 2=pseudo-random dithering
+</dd>
+<dt>webp:partitions=[0-3]</dt>
+<dd>log2(number of token partitions) in [0..3].  Default is 0 for
+easier progressive decoding.
+</dd>
+<dt>webp:partition-limit={0-100}</dt>
+<dd>Quality degradation allowed to fit the 512k limit on prediction
+modes coding (0: no degradation, 100: maximum possible
+degradation).
+</dd>
+<dt>webp:emulate-jpeg-size={true|false}</dt>
+<dd>If true, compression parameters will be remapped to better match
+the expected output size from JPEG compression. Generally, the output
+size will be similar but the degradation will be lower.
+</dd>
+<dt>webp:thread-level=&lt;integer&gt;</dt>
+<dd>If non-zero, try and use multi-threaded encoding.
+</dd>
+<dt>webp:low-memory={true|false}</dt>
+<dd>If set, reduce memory usage (but increase CPU use)
 </dd>
 </dl>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
@@ -2390,6 +2487,7 @@ characters:</font></td></tr></table>
      %d   directory
      %e   filename extension
      %f   filename
+     %g   page dimensions and offsets
      %h   height
      %i   input filename
      %k   number of unique colors
@@ -2398,17 +2496,33 @@ characters:</font></td></tr></table>
      %n   number of scenes
      %o   output filename
      %p   page number
-     %q   image minimum bit depth
+     %q   image bit depth
      %r   image type description
      %s   scene number
      %t   top of filename
      %u   unique temporary filename
      %w   width
-     %x   x resolution
-     %y   y resolution
+     %x   horizontal resolution
+     %y   vertical resolution
+     %A   transparency supported
+     %C   compression type
+     %D   GIF disposal method
+     %G   Original width and height
+     %H   page height
+     %M   original filename specification
+     %O   page offset (x,y)
+     %P   page dimensions (width,height)
+     %Q   compression quality
+     %T   time delay (in centi-seconds)
+     %U   resolution units
+     %W   page width
+     %X   page horizontal offset (x)
+     %Y   page vertical offset (y)
+     %@   trim bounding box
      %#   signature
      \n   newline
      \r   carriage return
+     %%   %
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For example,</font></td></tr></table>
@@ -2442,10 +2556,10 @@ information contained in the file:</font></td></tr></table>
      %[EXIF:&lt;tag&gt;]
 </pre>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Where "&lt;tag&gt;" can be one of the following:</font></td></tr></table>
+Where "&lt;tag&gt;" may be one of the following:</font></td></tr></table>
 <pre>
      *  (print all Exif tags, in keyword=data format)
-     !  (print all Exif tags, in tag_number data format)
+     !  (print all Exif tags, in tag_number format)
      #hhhh (print data for Exif tag #hhhh)
      ImageWidth
      ImageLength
@@ -2530,6 +2644,27 @@ Where "&lt;tag&gt;" can be one of the following:</font></td></tr></table>
      FileSource
      SceneType
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+JPEG specific information (from reading a JPEG file) may be obtained
+like this:</font></td></tr></table>
+<pre>
+     %[JPEG-&lt;tag&gt;]
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Where "&lt;tag&gt;" may be one of the following:</font></td></tr></table>
+<pre>
+     *                 (all JPEG-related tags, in
+                        keyword=data format)
+     Quality           IJG JPEG "quality" estimate
+     Colorspace        JPEG colorspace numeric ID
+     Colorspace-Name   JPEG colorspace name
+     Sampling-factors  JPEG sampling factors
+</pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Please note that JPEG has no notion of "quality" and that the quality
+metric used by, and estimated by the software is based on the quality
+metric established by IJG JPEG 6b.  Other encoders (e.g. that used by
+Adobe Photoshop) use different encoding metrics.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Surround the format specification with quotation marks to prevent your shell
 from misinterpreting any spaces and square brackets.</font></td></tr></table>
@@ -2636,10 +2771,24 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-geometry"></a>-geometry <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-By default, the window size is the image size and the location is
-chosen by you when it is mapped.</font></td></tr></table>
+The <strong>-geometry</strong> option is used for a number of different
+purposes, depending on the utility it is used with.</font></td></tr></table>
+&lt;pp
+For the X11 commands ('animate', 'display', and 'import'), it
+specifies the preferred size and location of the Image window.  By
+default, the window size is the image size and the location is chosen
+by you (or your window manager) when it is mapped.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1"> For the 'import', 'convert', 'mogrify' utility commands it may be
+used to specify the desired size when resizing an image.  In this
+case, symbols representing resize options may be appended to the
+geometry string to influence how the resize request is treated.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+See later notes corresponding to usage by particular commands.  The
+following notes apply to when <strong>-geometry</strong> is used to express a
+resize request, taking into account the current properties of the
+image.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, the width and height are maximum values. That is, the
 image is expanded or contracted to fit the width and height value
@@ -2654,10 +2803,13 @@ exactly the size you specify. For example, if you specify
 <tt>640x480!</tt> the image width is set to 640 pixels and height to
 480.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-If only the width is specified, the width assumes the
-value and the height is chosen to maintain the aspect ratio of the image.
-Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
-the width is chosen to maintain the aspect ratio.</font></td></tr></table>
+If only the width is specified, without the trailing 'x', then height
+is set to width (e.g., <tt>-geometry 100</tt> is the same as
+<tt>-geometry 100x100</tt>).  If only the width is specified but with
+the trailing 'x', then width assumes the value and the height is
+chosen to maintain the aspect ratio of the image.  Similarly, if only
+the height is specified prefixed by 'x' (e.g., <tt>-geometry
+x256</tt>), the width is chosen to maintain the aspect ratio.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 To specify a percentage width or height instead, append %. The image size
 is multiplied by the width and height percentages to obtain the final image
@@ -3040,7 +3192,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-limit"></a>-limit <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 By default, resource limits are estimated based on the available
 resources of the system. The resource limits are <strong>Disk</strong>, maximum
@@ -3048,18 +3200,20 @@ total disk space consumed; <strong>File</strong>, maximum number of file
 descriptors allowed to be open at once; <strong>Map</strong>, maximum total
 number of file bytes which may be memory mapped; <strong>Memory</strong>,
 maximum total number of bytes of heap memory used for image storage;
-<strong>Pixels</strong>, maximum absolute image size (per image); and
-<strong>Threads</strong>, the maximum number of worker threads to use per OpenMP
-thread team.</font></td></tr></table>
+<strong>Pixels</strong>, maximum absolute image size (per image); <strong>Width</strong>,
+maximum image pixels width; <strong>Height</strong>, maximum image pixels
+height; and <strong>Threads</strong>, the maximum number of worker threads to
+use per OpenMP thread team.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 These resource limits are used to decide if (for a given image) the
-decoded image ("pixel cache") should be stored in heap memory (RAM), in a
-memory-mapped disk file, or in a disk file accessed via read/write I/O.
-The number of total pixels in one image may also be limited in order to
-force the reading, or creation of images larger than the limit (in
-pixels) to intentionally fail. The disk limit establishes an overall
-limit since using the disk is the means of last resort. When the disk
-limit has been reached, no more images may be read.</font></td></tr></table>
+decoded image ("pixel cache") should be stored in heap memory (RAM),
+in a memory-mapped disk file, or in a disk file accessed via
+read/write I/O.  The number of total pixels in one image, and/or the
+width/height, may also be limited in order to force the reading, or
+creation of images larger than the limit (in pixels) to intentionally
+fail. The disk limit establishes an overall limit since using the disk
+is the means of last resort. When the disk limit has been reached, no
+more images may be read.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 The value argument is an absolute value, but may have standard binary
 suffix characters applied ('K', 'M', 'G', 'T', 'P', 'E') to apply a
@@ -3072,10 +3226,11 @@ megabytes and 64 megabytes respectively.</font></td></tr></table>
 Resource limits may also be set using environment variables. The
 environment variables <strong>MAGICK_LIMIT_DISK</strong>,
 <strong>MAGICK_LIMIT_FILES</strong>, <strong>MAGICK_LIMIT_MAP</strong>,
-<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>, and
+<strong>MAGICK_LIMIT_MEMORY</strong>, <strong>MAGICK_LIMIT_PIXELS</strong>,
+<strong>MAGICK_LIMIT_WIDTH</strong>, <strong>MAGICK_LIMIT_HEIGHT</strong>,and
 <strong>OMP_NUM_THREADS</strong> may be used to set the limits for disk space,
-open files, memory mapped size, heap memory, per-image pixels, and
-threads respectively.</font></td></tr></table>
+open files, memory mapped size, heap memory, per-image pixels, image
+width, image height, and threads respectively.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Use the option <tt>-list resource</tt> list the current limits.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -3637,16 +3792,16 @@ independently so that operations are on a per-channel basis.</font></td></tr></t
 <strong>Gray</strong> treats the color channels as a grayscale intensity and
 performs the requested operation on the equivalent pixel intensity so the
 result is a gray image.</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">Select an operator from <strong>Add</strong>, <strong>And</strong>, <strong>Assign</strong>,
 <strong>Depth</strong>, <strong>Divide</strong>, <strong>Gamma</strong>, <strong>Negate</strong>,
 <strong>LShift</strong>, <strong>Log</strong>, <strong>Max</strong>, <strong>Min</strong>, <strong>Multiply</strong>,
 <strong>Or</strong>, <strong>Pow</strong> <strong>RShift</strong>, <strong>Subtract</strong>,
-<strong>Threshold</strong>, <strong>Threshold-White</strong>, <strong>Threshold-Black</strong>,
-<strong>Xor</strong>, <strong>Noise-Gaussian</strong>, <strong>Noise-Impulse</strong>,
-<strong>Noise-Laplacian</strong>, <strong>Noise-Multiplicative</strong>,
-<strong>Noise-Poisson</strong>, <strong>Noise-Random</strong>, and
-<strong>Noise-Uniform</strong>.</font></td></tr></table>
+<strong>Threshold</strong>, <strong>Threshold-White</strong>,
+<strong>Threshold-White-Negate</strong>, <strong>Threshold-Black</strong>,
+<strong>Threshold-Black-Negate</strong>, <strong>Xor</strong>, <strong>Noise-Gaussian</strong>,
+<strong>Noise-Impulse</strong>, <strong>Noise-Laplacian</strong>,
+<strong>Noise-Multiplicative</strong>, <strong>Noise-Poisson</strong>,
+<strong>Noise-Random</strong>, and <strong>Noise-Uniform</strong>.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Rvalue may be any floating point or integer value. Normally rvalue will
 be in the range of 0 to MaxRGB, where MaxRGB is the largest quantum value
@@ -3723,10 +3878,22 @@ remove apparent noise from the bright parts of an image. If <strong>all</strong>
 channels are specified, then thresholding is done based on computed pixel
 intensity.
 </dd>
+<dt>Threshold-White-Negate</dt>
+<dd>Result is set to black if channel value is greater than
+rvalue and is unchanged if it is less than or equal to rvalue. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
 <dt>Threshold-black</dt>
 <dd>Result is minimum (black) if channel value is less than than rvalue
 and is unchanged if it is greater than or equal to rvalue. This can be
 used to remove apparent noise from the dark parts of an image. If
+<strong>all</strong> channels are specified, then thresholding is done based on
+computed pixel intensity.
+</dd>
+<dt>Threshold-Black-Negate</dt>
+<dd>Result is set to white if channel value is less than than
+rvalue and is unchanged if it is greater than or equal to rvalue. If
 <strong>all</strong> channels are specified, then thresholding is done based on
 computed pixel intensity.
 </dd>
@@ -4691,9 +4858,23 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a name="details-set"></a>-set <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Set a named image attribute.  The attribute is set on the current
+(previously specified on command line) image.</font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a name="details+set"></a>+set <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Unset a named image attribute.  The attribute is removed from the current
 (previously specified on command line) image.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -5638,19 +5819,38 @@ configuration files in $HOME/.magick if the directory exists. See
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    MAGICK_ACCESS_MONITOR
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>When set to <strong>TRUE</strong>, command line monitor mode (enabled by
+<strong>-monitor</strong>) will also show files accessed (including temporary
+files) and any external commands which are executed. This is useful
+for debugging, but also illustrates arguments made available to an
+access handler registered by the
+<strong>MagickSetConfirmAccessHandler()</strong> C library function.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_CODER_STABILITY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>The minimum coder stability level before it will be used. The
-available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, and <strong>UNSTABLE</strong>.
-The default minimum level is <strong>UNSTABLE</strong>, which means that all
-available coders will be used. The purpose of this option is to reduce
-the security exposure (or apparent complexity) due to the huge number of
-formats supported. Coders at the <strong>PRIMARY</strong> level are commonly used
-formats with very well maintained implementations. Coders at the
-<strong>STABLE</strong> level are reasonably well maintained but represent less used
-formats. Coders at the <strong>UNSTABLE</strong> level either have weak
-implementations, the file format itself is weak, or the probability the
-coder will be needed is vanishingly small.</td></tr></table>
+available levels are <strong>PRIMARY</strong>, <strong>STABLE</strong>, <strong>UNSTABLE</strong>,
+and <strong>BROKEN</strong>.  The default minimum level is <strong>UNSTABLE</strong>,
+which means that all available working coders will be used. The
+purpose of this option is to reduce the security exposure (or apparent
+complexity) due to the huge number of formats supported. Coders at the
+<strong>PRIMARY</strong> level are commonly used formats with very well
+maintained implementations. Coders at the <strong>STABLE</strong> level are
+reasonably well maintained but represent less used formats. Coders at
+the <strong>UNSTABLE</strong> level either have weak implementations, the file
+format itself is weak, or the probability the coder will be needed is
+vanishingly small. Coders at the <strong>BROKEN</strong> level are known to
+often not work properly or might not be useful in their current state
+at all.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5694,7 +5894,9 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     MAGICK_DEBUG
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Debug options (see <strong>-debug</strong> for details)</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Debug options (see <strong>-debug</strong> for details).  Setting debug
+options via an environment variable is currently necessary to see the
+complete initialization process.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5721,6 +5923,21 @@ specified search path is used before trying the default search path.</td></tr></
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
+    MAGICK_GHOSTSCRIPT_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For Microsoft Windows, specify the path to the Ghostscript
+installation rather than searching for it via the Windows registry.
+This helps in case Ghostscript is not installed via the Ghostscript
+Windows installer or the user wants more control over the Ghostscript
+used.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
     MAGICK_HOME
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to top of GraphicsMagick installation directory. Only observed
@@ -5738,10 +5955,15 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>If <strong>MAGICK_MMAP_READ</strong> is set to <strong>TRUE</strong>, GraphicsMagick
 will attempt to memory-map the input file for reading. This usually
-substantially improves read performance if the file has recently been
-read. However, testing shows that performance may be reduced for files
-accessed for the first time via a network since some operating systems
-failed to do read-ahead over network mounts for memory mapped files.</td></tr></table>
+substantially improves repeated read performance since the file is
+already in memory after the first time it has been read. However,
+testing shows that performance may be reduced for files accessed for
+the first time since data is accessed via page-faults (upon first
+access) and many operating systems fail to do sequential read-ahead of
+memory mapped files, and particularly if those files are accessed over
+a network.  If many large input files are read, then enabling this
+option may harm performance by overloading the operating system's VM
+system as it then needs to free unmapped pages and map new ones.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5812,7 +6034,9 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     MAGICK_LIMIT_MAP
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory mapped file allocation.  A memory mapped
+file consumes memory when the file is accessed, although the system
+may reclaim such memory when needed.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -5824,6 +6048,46 @@ width=15><b><font face="Helvetica, Arial"
     MAGICK_LIMIT_MEMORY
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_PIXELS
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of total pixels (image rows times image colums) to
+allow for any image which is requested to be created or read.  This is
+useful to place a limit on how large an image may be.  If the input
+image file has image dimensions larger than the pixel limit, then the
+image memory allocation is denied and an error is returned
+immediately.  This is a per-image limit and does not limit the total
+number of pixels due to multiple image frames/pages (e.g. multi-page
+document or an animation).</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_WIDTH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum pixel width of an image read, or created.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    MAGICK_LIMIT_HEIGHT
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum pixel height of an image read, or created.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6321,7 +6585,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -6376,7 +6640,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7273,8 +7537,8 @@ use:
 <p>
 To create an annotated difference image use:
 <pre>
-    gm compare -algorithm annotate -highlight-color purple
-            -file diff.miff original.miff compare.miff
+    gm compare -highlight-style assign -highlight-color purple \
+      -file diff.miff original.miff compare.miff
 </pre>
 </td></tr></table>
      <p>
@@ -7451,7 +7715,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7899,7 +8163,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7965,7 +8229,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -8152,7 +8416,18 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-set">-set</a> <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details+set">+set</a> <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9516,7 +9791,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -9637,7 +9912,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -10176,7 +10451,18 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-set">-set</a> <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details+set">+set</a> <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11067,7 +11353,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11144,7 +11430,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -11375,7 +11661,18 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-set">-set</a> <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details+set">+set</a> <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14038,15 +14335,17 @@ color="#00B04F"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Identify</strong> describes the format and characteristics of one or more
-image files. It will also report if an image is incomplete or corrupt.
-The information displayed includes the scene number, the file name, the
-width and height of the image, whether the image is colormapped or not,
-the number of colors in the image, the number of bytes in the image, the
-format of the image (JPEG, PNM, etc.), and finally the number of seconds
-in both user time and elapsed time it took to read and process the image.
-If -verbose or +ping are provided as an option, the pixel read rate is
-also displayed. An example line output from <strong>identify</strong> follows:
+<strong>Identify</strong> describes the format and characteristics of one or
+more image files as internally supported by the software. It will also
+report if an image is incomplete or corrupt.  The information
+displayed includes the scene number, the file name, the width and
+height of the image, whether the image is colormapped or not, the
+number of colors in the image, the number of bytes in the image, the
+format of the image (JPEG, PNM, etc.), and finally the number of
+seconds in both user time and elapsed time it took to read and process
+the image.  If -verbose or +ping are provided as an option, the pixel
+read rate is also displayed. An example line output from
+<strong>identify</strong> follows:
 <pre>
     images/aquarium.miff 640x480 PseudoClass 256c
            308135b MIFF 0.000u 0:01
@@ -14193,7 +14492,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14556,7 +14855,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14600,7 +14899,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -14765,7 +15064,18 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-set">-set</a> <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details+set">+set</a> <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -15501,7 +15811,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -15611,7 +15921,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -16117,7 +16427,18 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-set">-set</a> <i>&lt;attribute&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribut</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>set an image attribute</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#FFFFFF">
+<img SRC="images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#00B04F"><font size="+1">
+    <a href="GraphicsMagick.html#details+set">+set</a> <i>&lt;attribute&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>unset an image attribute</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -16944,7 +17265,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-geometry">-geometry</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>^</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>preferred size and location of the Image window.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify dimension, offset, and resize options.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -17010,7 +17331,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#00B04F"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, or Threads resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, Memory, Pixels, Width, Height or Threads resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -17642,8 +17963,8 @@ color="#00B04F"><font size="+1">
 <p>To display the version information:
 <pre>
   % gm -version
-  GraphicsMagick 1.3.17 2012-10-13 Q16 http://www.GraphicsMagick.org/
-  Copyright (C) 2002-2012 GraphicsMagick Group.
+  GraphicsMagick 1.3.19 2013-12-31 Q16 http://www.GraphicsMagick.org/
+  Copyright (C) 2002-2013 GraphicsMagick Group.
   Additional copyrights and licenses apply to this software.
   See http://www.GraphicsMagick.org/www/Copyright.html for details.
   Feature Support:
@@ -17664,7 +17985,7 @@ color="#00B04F"><font size="+1">
     PNG                      yes
     TIFF                     yes
     TRIO                     no
-    UMEM                     no
+    UMEM                     yes
     WMF                      no
     X11                      yes
     XML                      yes
